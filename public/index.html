@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FLERS - Landing</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <div class="logo">FLERS</div>
+    <nav class="nav">
+      <a href="index.html">Home</a>
+      <a href="#">About us</a>
+      <a href="#">Contact us</a>
+    </nav>
+  </header>
+  <h1 class="main-title">Locate an Emergency Facility</h1>
+  <p class="description">Locate the nearest, available and functioning emergency facilities to you.</p>
+  <p class="select-text" style="text-align:center; font-size:30px; margin-top:50px;">Select facility type to locate</p>
+  <div class="button-group">
+    <a href="location.html?type=fire" class="button">Fire Station</a>
+    <a href="location.html?type=police" class="button">Police Station</a>
+    <a href="location.html?type=hospital" class="button">Hospital</a>
+  </div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="script.js"></script>
+</body>
+</html>

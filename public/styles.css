@@ -1,0 +1,193 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  color: #000;
+  background-color: #fff;
+}
+
+header {
+  height: 90px;
+  background-color: #000;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+
+.logo {
+  font-size: 30px;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.nav a {
+  color: #fff;
+  margin-left: 20px;
+  text-decoration: none;
+}
+
+.nav a:hover{
+  text-decoration: underline;
+}
+
+.main-title {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 80px;
+  font-style: italic;
+  text-align: center;
+  margin-top: 50px;
+}
+
+.description {
+  font-size: 24px;
+  text-align: center;
+  margin: 20px 0;
+}
+
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 50px;
+}
+
+.button {
+  width: 182px;
+  height: 51px;
+  border-radius: 26px;
+  background-color: #000;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.button:hover{
+  background-color: #a51313;
+}
+
+.search-box {
+  width: 810px;
+  height: 45px;
+  border-radius: 23px;
+  border: 0.25px solid #000;
+  background-color: #f4f4f4;
+  margin: 100px auto 0;
+  padding: 0 20px;
+  font-size: 14px;
+  color: #c1c1c1;
+  font-style: italic;
+  display: flex;
+  align-items: center;
+}
+
+.or-text {
+  text-align: center;
+  font-size: 24px;
+  margin: 20px 0;
+}
+
+.device-location-button {
+  width: 279px;
+  height: 51px;
+  border-radius: 26px;
+  background-color: #000;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-size: 24px;
+  margin: 0 auto;
+  cursor: pointer;
+}
+
+#map {
+  height: 530px;
+  width: 900px;
+  margin: 20px auto;
+}
+
+.facility-card {
+  margin: 50px auto;
+  width: 900px;
+  padding: 20px;
+}
+
+.facility-name {
+  font-size: 53px;
+  font-weight: 700;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.facility-info {
+  font-size: 40px;
+}
+
+.status-open {
+  color: #006d2c;
+}
+
+.status-crowded {
+  color: #fa0;
+}
+
+.status-closed {
+  color: #fc0000;
+}
+
+.stars {
+  color: #fa0;
+  margin-bottom: 10px;
+}
+
+.facility-buttons {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.facility-button {
+  width: 180px;
+  height: 51px;
+  border-radius: 26px;
+  background-color: #000;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.facility-button:hover{
+  background-color: #a51313;
+}
+
+#reviews {
+  margin-top: 20px;
+}
+
+.review {
+  border-top: 1px solid #ccc;
+  padding: 10px 0;
+}
+
+@media (max-width: 1080px) {
+  .search-box, #map, .facility-card {
+    width: 90%;
+  }
+
+  .button-group {
+    flex-direction: column;
+  }
+}
