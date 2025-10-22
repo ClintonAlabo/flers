@@ -2,6 +2,7 @@ const express = require('express');
 const axios = require('axios');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const path = require('path');  // Add this for reliable paths
 
 dotenv.config();
 
@@ -22,11 +23,17 @@ async function testConnection() {
 }
 testConnection().catch(err => console.error('DB connection test failed:', err));
 
-// Rest of your code remains unchanged
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use(express.static('public'));
+
+// Serve static files from 'public' folder reliably
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Explicit root route to serve index.html
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 const orsApiKey = process.env.ORS_API_KEY;
 
@@ -174,5 +181,13 @@ app.post('/api/directions', async (req, res) => {
     res.status(500).json({ error: 'Directions error' });
   }
 });
+
+// For local testing: Listen on port if running directly (ignored on Vercel)
+if (require.main === module) {
+  const port = process.env.PORT || 3000;
+  app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+  });
+}
 
 module.exports = app;
