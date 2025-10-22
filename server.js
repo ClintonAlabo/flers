@@ -5,11 +5,14 @@ const cors = require('cors');
 
 dotenv.config();
 
-const { Pool } = require('pg');
+const { Pool, neonConfig } = require('@neondatabase/serverless');
+const ws = require('ws');
+
+// Configure WebSocket to fix 'undefined' error
+neonConfig.webSocketConstructor = ws;
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }  // Required for Neon
+  connectionString: process.env.DATABASE_URL
 });
 
 // Test connection
@@ -17,8 +20,9 @@ async function testConnection() {
   const { rows } = await pool.query('SELECT NOW()');
   console.log('Connected to Neon:', rows[0]);
 }
-testConnection();
+testConnection().catch(err => console.error('DB connection test failed:', err));
 
+// Rest of your code remains unchanged
 const app = express();
 app.use(cors());
 app.use(express.json());
