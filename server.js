@@ -38,13 +38,6 @@ app.get('/', (req, res) => {
 
 const orsApiKey = process.env.ORS_API_KEY;
 
-// Helper to prioritize status
-const statusPriority = {
-  open: 1,
-  crowded: 2,
-  closed: 3,
-};
-
 // API endpoint for getting top 3 facilities
 app.get('/api/facilities', async (req, res) => {
   const { type, lat, lon } = req.query;
@@ -56,18 +49,13 @@ app.get('/api/facilities', async (req, res) => {
   const parsedLon = parseFloat(lon);
 
   try {
-    // Fetch facilities with geo_distance calculated in DB, pre-sorted and limited to top 20 by priority and geo_distance
+    // Fetch facilities with geo_distance calculated in DB, pre-sorted by geo_distance and limited to top 20
     const { rows } = await pool.query(`
       SELECT *,
-        (CASE status
-          WHEN 'open' THEN 1
-          WHEN 'crowded' THEN 2
-          WHEN 'closed' THEN 3
-          ELSE 4 END) AS priority,
         ST_Distance(ST_MakePoint($2, $3)::geography, ST_MakePoint(longitude, latitude)::geography)/1000 AS geo_distance
       FROM facilities
       WHERE type = $1
-      ORDER BY priority ASC, geo_distance ASC
+      ORDER BY geo_distance ASC
       LIMIT 20
     `, [type, parsedLon, parsedLat]);
 
@@ -109,11 +97,10 @@ app.get('/api/facilities', async (req, res) => {
       ...f,
       distance: distances[index + 1], // skip self
       time: Math.round(durations[index + 1] / 60), // seconds to min
-      priority: f.priority,
     }));
 
-    // Sort by priority then driving distance (in case geo differed from driving)
-    facilitiesWithDist.sort((a, b) => a.priority - b.priority || a.distance - b.distance);
+    // Sort by driving distance (in case geo differed from driving)
+    facilitiesWithDist.sort((a, b) => a.distance - b.distance);
 
     // Top 3
     const top3 = facilitiesWithDist.slice(0, 3);
@@ -157,8 +144,8 @@ app.get('/api/geocode', async (req, res) => {
       params: {
         api_key: orsApiKey,
         text,
-        boundary_country: 'NGA',  // Restrict to Nigeria
-        boundary_bbox: [[6.3818359,4.1265755],[7.1784024,5.2756201]]  // Bounding box for Rivers State, Nigeria
+        'boundary.country': 'NGA',  // Restrict to Nigeria
+        'boundary.bbox': [[6.3818359,4.1265755],[7.1784024,5.2756201]]  // Bounding box for Rivers State, Nigeria
       },
     });
 
