@@ -17,7 +17,7 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
+  padding: 0 60px;
 }
 
 .logo {
@@ -25,10 +25,30 @@ header {
   font-family: 'Times New Roman', Times, serif;
 }
 
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .nav a {
-  color: #fff;
+  margin-right: 20px;
   margin-left: 20px;
   text-decoration: none;
+  color: #fff;
+}
+
+.hamburger-menu {
+  display: none;
+  cursor: pointer;
+}
+
+.hamburger-menu span {
+  display: block;
+  width: 25px;
+  height: 3px;
+  background-color: #fff;
+  margin: 5px 0;
 }
 
 .nav a:hover{
@@ -46,7 +66,7 @@ header {
 .description {
   font-size: 24px;
   text-align: center;
-  margin: 20px 0;
+  margin: 20px 60px;
 }
 
 .button-group {
@@ -87,6 +107,17 @@ header {
   font-style: italic;
   display: flex;
   align-items: center;
+}
+
+#search-input{
+  text-align: center;
+  width:100%;
+  font-style:italic;
+  color:#c1c1c1;
+  font-size:14px;
+  background:transparent;
+  outline: none;
+  border: none;
 }
 
 .or-text {
@@ -182,12 +213,57 @@ header {
   padding: 10px 0;
 }
 
-@media (max-width: 1080px) {
+@media (max-width: 768px) {
+  header {
+    padding: 0 20px; /* Reduce padding for mobile to prevent overflow */
+  }
+
+  .nav {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    top: 90px; /* Adjusted to match header height */
+    left: 0;
+    width: 100%;
+    background-color: #000; /* Changed to black for consistency with header */
+    padding: 20px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .nav.show {
+    display: flex;
+  }
+  
+  .nav a {
+    margin: 10px 0; /* Simplified margins for column layout */
+    color: #fff; /* Ensure text is visible on black bg */
+  }
+  
+  .hamburger-menu {
+    display: block !important; /* Add !important to override any potential issues */
+  }
+
   .search-box, #map, .facility-card {
     width: 90%;
   }
 
   .button-group {
     flex-direction: column;
+    align-items: center;
+    margin-bottom: 60px;
+  }
+
+  .main-title {
+    font-size: 50px; /* Reduce size for mobile */
+  }
+
+  .description {
+    font-size: 18px;
+    margin: 20px 20px;
+  }
+
+  .device-location-button {
+    width: 90%;
   }
 }

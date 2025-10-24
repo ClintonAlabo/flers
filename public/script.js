@@ -1,6 +1,16 @@
 // Shared script for all pages
 
 document.addEventListener('DOMContentLoaded', () => {
+  const hamburger = document.querySelector('.hamburger-menu');
+  const nav = document.querySelector('.nav');
+
+  if (hamburger && nav) {
+    hamburger.addEventListener('click', () => {
+      nav.classList.toggle('show');
+      hamburger.classList.toggle('active'); // Optional: for animating the hamburger to X
+    });
+  }
+
   // Function to get query param
   function getQueryParam(param) {
     const urlParams = new URLSearchParams(window.location.search);
