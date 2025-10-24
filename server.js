@@ -16,8 +16,9 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL
 });
 
-// Test connection
+// Test connection and enable postgis extension if not already
 async function testConnection() {
+  await pool.query('CREATE EXTENSION IF NOT EXISTS postgis;');
   const { rows } = await pool.query('SELECT NOW()');
   console.log('Connected to Neon:', rows[0]);
 }
@@ -51,21 +52,38 @@ app.get('/api/facilities', async (req, res) => {
     return res.status(400).json({ error: 'Type, lat, and lon are required' });
   }
 
+  const parsedLat = parseFloat(lat);
+  const parsedLon = parseFloat(lon);
+
   try {
-    const { rows } = await pool.query('SELECT * FROM facilities WHERE type = $1', [type]);
+    // Fetch facilities with geo_distance calculated in DB, pre-sorted and limited to top 20 by priority and geo_distance
+    const { rows } = await pool.query(`
+      SELECT *,
+        (CASE status
+          WHEN 'open' THEN 1
+          WHEN 'crowded' THEN 2
+          WHEN 'closed' THEN 3
+          ELSE 4 END) AS priority,
+        ST_Distance(ST_MakePoint($2, $3)::geography, ST_MakePoint(longitude, latitude)::geography)/1000 AS geo_distance
+      FROM facilities
+      WHERE type = $1
+      ORDER BY priority ASC, geo_distance ASC
+      LIMIT 20
+    `, [type, parsedLon, parsedLat]);
+
     if (rows.length === 0) {
       return res.json([]);
     }
 
     // Prepare locations: user as first, then facilities
-    const locations = [[parseFloat(lon), parseFloat(lat)]];
+    const locations = [[parsedLon, parsedLat]];
     const destinations = [];
     rows.forEach((f, index) => {
       locations.push([f.longitude, f.latitude]);
       destinations.push(index + 1);
     });
 
-    // Call ORS matrix
+    // Call ORS matrix for accurate driving distances and durations
     const orsResponse = await axios.post(
       'https://api.openrouteservice.org/v2/matrix/driving-car',
       {
@@ -86,15 +104,15 @@ app.get('/api/facilities', async (req, res) => {
     const distances = orsResponse.data.distances[0];
     const durations = orsResponse.data.durations[0];
 
-    // Map to facilities
+    // Map to facilities with driving data
     const facilitiesWithDist = rows.map((f, index) => ({
       ...f,
       distance: distances[index + 1], // skip self
       time: Math.round(durations[index + 1] / 60), // seconds to min
-      priority: statusPriority[f.status],
+      priority: f.priority,
     }));
 
-    // Sort by priority then distance
+    // Sort by priority then driving distance (in case geo differed from driving)
     facilitiesWithDist.sort((a, b) => a.priority - b.priority || a.distance - b.distance);
 
     // Top 3
@@ -139,6 +157,8 @@ app.get('/api/geocode', async (req, res) => {
       params: {
         api_key: orsApiKey,
         text,
+        boundary_country: 'NGA',  // Restrict to Nigeria
+        boundary_bbox: [[6.3818359,4.1265755],[7.1784024,5.2756201]]  // Bounding box for Rivers State, Nigeria
       },
     });
 
